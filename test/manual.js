@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+var concurrency = Math.ceil(require('os').cpus().length * 16);
+require('https').globalAgent.maxSockets = concurrency;
+
 var s3url = process.argv[2];
 
 var keys = require('../lib/keys')(s3url, { objectMode: true });
