@@ -18,3 +18,13 @@ $ s3keys s3://my-bucket/some-prefix
 ```sh
 $ s3purge s3://my-bucket/all-finished-with-these
 ```
+
+## Running tests
+
+You can run tests against your own bucket/prefix by specifying them as environment variables:
+
+```
+TestBucket=my-bucket TestPrefix=my-prefix npm test
+```
+
+Otherwise these values default to buckets owned by Mapbox which require appropriate authentication.
