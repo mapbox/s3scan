@@ -21,10 +21,10 @@ var interval;
 var purge = s3scan.Purge(s3url, agent, function(err) {
   if (!quiet) clearInterval(interval);
   setTimeout(function() {
-    if (!quiet) console.log('');
+    console.log(quiet ? purge.deleted : '');
     if (err) throw err;
     else process.exit(0);
-  }, 500);
+  }, 600);
 });
 
 if (!quiet) {
