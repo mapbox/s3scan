@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/mapbox/s3scan.svg?branch=master)](https://travis-ci.org/mapbox/s3scan)
+
 # s3scan
 
 Provides native Node.js streams for S3 operations such as
