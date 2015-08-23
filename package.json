@@ -1,6 +1,6 @@
 {
   "name": "s3scan",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Streaming operations on S3 objects",
   "main": "index.js",
   "scripts": {
