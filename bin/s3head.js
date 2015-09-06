@@ -22,5 +22,5 @@ toString._transform = function(head, enc, callback) {
 };
 
 s3scan.ScanHeaders(s3url, { agent: agent })
-  .pipe(toString);
+  .pipe(toString)
   .pipe(process.stdout);
