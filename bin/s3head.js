@@ -21,6 +21,6 @@ toString._transform = function(head, enc, callback) {
   callback(null, JSON.stringify(head));
 };
 
-s3scan.ScanHeaders(s3url, { agent: agent })
+s3scan.ScanHeaders(s3url, agent)
   .pipe(toString)
   .pipe(process.stdout);
