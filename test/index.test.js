@@ -104,3 +104,17 @@ test('purging fixtures - please be patient...', function(assert) {
     });
   });
 });
+
+test('get stream no-op on 404', function(assert) {
+  var getter = s3scan.Get(bucket, { agent: agent })
+    .on('data', function(d) {
+      assert.fail('no data should be transmitted');
+    })
+    .on('error', function(err) {
+      assert.ifError(err, 'no error should arise');
+    })
+    .on('finish', function() { assert.end(); });
+
+  getter.write([prefix, testId, 'does-not-exist'].join('/'));
+  getter.end();
+});
