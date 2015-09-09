@@ -89,6 +89,8 @@ test('scan objects', function(assert) {
 });
 
 test('purging fixtures - please be patient...', function(assert) {
+  var deletedEvents = 0;
+
   s3scan.Purge(uri, agent, function(err) {
     assert.ifError(err, 'success');
 
@@ -99,9 +101,12 @@ test('purging fixtures - please be patient...', function(assert) {
       Prefix: params.Key
     }, function(err, data) {
       if (err) throw err;
+      assert.equal(deletedEvents, Object.keys(fixtures).length, 'all deleted events fired');
       assert.equal(data.Contents.length, 0, 'all items removed');
       assert.end();
     });
+  }).on('deleted', function() {
+    deletedEvents++;
   });
 });
 
