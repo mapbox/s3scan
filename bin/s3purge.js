@@ -30,7 +30,7 @@ var purge = s3scan.Purge(s3url, { agent: agent, dryrun: dryrun }, function(err) 
 
 if (dryrun) {
   purge.on('deleted', function(key) {
-    console.log(key);
+    console.log('[dryrun] ' + key);
   });
 }
 
