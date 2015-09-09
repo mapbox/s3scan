@@ -88,6 +88,29 @@ test('scan objects', function(assert) {
     });
 });
 
+test('[dryrun] purging fixtures - please be patient...', function(assert) {
+  var deletedEvents = 0;
+  var remainingObjects = 0;
+
+  s3scan.Purge(uri, { agent: agent, dryrun: true }, function(err) {
+    assert.ifError(err, 'success');
+
+    var params = s3urls.fromUrl(uri);
+
+    s3scan.List(uri, { agent: agent })
+      .on('data', function(keys) {
+        remainingObjects += keys.toString().trim().split('\n').length;
+      })
+      .on('end', function() {
+        assert.equal(deletedEvents, Object.keys(fixtures).length, 'all deleted events fired');
+        assert.equal(remainingObjects, Object.keys(fixtures).length, 'no items removed');
+        assert.end();
+      });
+  }).on('deleted', function() {
+    deletedEvents++;
+  });
+});
+
 test('purging fixtures - please be patient...', function(assert) {
   var deletedEvents = 0;
 

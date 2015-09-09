@@ -95,26 +95,24 @@ module.exports.Scan = function(s3url, agent) {
  *   console.log('deleted all the things!');
  * });
  */
-module.exports.Purge = function(s3url, agent, callback) {
-  if (typeof agent === 'function') {
-    callback = agent;
-    agent = null;
+module.exports.Purge = function(s3url, opts, callback) {
+  if (typeof opts === 'function') {
+    callback = opts;
+    opts = {};
   }
 
   var bucket = s3urls.fromUrl(s3url).Bucket;
   if (!bucket) throw new Error('Invalid s3url');
-
-  var options = agent ? { agent: agent } : undefined;
 
   function done(err) {
     if (callback) return callback(err);
     if (err) throw err;
   }
 
-  var del = Delete(bucket, options)
+  var del = Delete(bucket, opts)
     .on('error', callback || function() {})
     .on('finish', callback || function() {});
-  var list = List(s3url, options)
+  var list = List(s3url, opts)
     .on('error', callback || function() {});
 
   list.pipe(Split()).pipe(del);
