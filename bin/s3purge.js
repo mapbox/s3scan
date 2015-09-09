@@ -16,9 +16,10 @@ if (!s3url) {
 }
 
 var quiet = process.argv[3] === '--quiet' || process.argv[3] === '-q';
+var dryrun = process.argv[3] === '--dryrun' || process.argv[3] === '-d';
 var interval;
 
-var purge = s3scan.Purge(s3url, agent, function(err) {
+var purge = s3scan.Purge(s3url, { agent: agent, dryrun: dryrun }, function(err) {
   if (!quiet) clearInterval(interval);
   setTimeout(function() {
     console.log(quiet ? purge.deleted : '');
@@ -27,7 +28,13 @@ var purge = s3scan.Purge(s3url, agent, function(err) {
   }, 600);
 });
 
-if (!quiet) {
+if (dryrun) {
+  purge.on('deleted', function(key) {
+    console.log(key);
+  });
+}
+
+if (!quiet && !dryrun) {
   interval = setInterval(function() {
     process.stdout.write(util.format('\r\033[KDeleted %s @ %s/s', purge.deleted, purge.rate()));
   }, 500);
