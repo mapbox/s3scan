@@ -72,7 +72,7 @@ test('scan objects', function(assert) {
   var found = [];
   var expected = Object.keys(fixtures);
 
-  s3scan.Scan(uri, agent)
+  s3scan.Scan(uri, { agent: agent })
     .on('error', function(err) {
       assert.ifError(err, 'should not fail');
     })
