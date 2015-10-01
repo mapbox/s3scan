@@ -146,3 +146,35 @@ test('get stream no-op on 404', function(assert) {
   getter.write([prefix, testId, 'does-not-exist'].join('/'));
   getter.end();
 });
+
+test('get stream allows errors to passthrough if configured', function(assert) {
+  assert.plan(1);
+  var getter = s3scan.Get(bucket, { agent: agent, passErrors: true })
+    .on('data', function(d) {
+      assert.equal(d.code, 'NoSuchKey', 'expected error object passed');
+    })
+    .on('error', function(err) {
+      assert.ifError(err, 'no error should arise');
+    });
+
+  getter.write([prefix, testId, 'does-not-exist'].join('/'));
+  getter.end();
+});
+
+test('get stream can provide request parameters', function(assert) {
+  assert.plan(2);
+  var getter = s3scan.Get(bucket, { agent: agent, passErrors: true, keys: true })
+    .on('data', function(d) {
+      assert.equal(d.code, 'NoSuchKey', 'expected error object passed');
+      assert.deepEqual(d.RequestParameters, {
+        Bucket: bucket,
+        Key: [prefix, testId, 'does-not-exist'].join('/')
+      }, 'expected parameters provided');
+    })
+    .on('error', function(err) {
+      assert.ifError(err, 'no error should arise');
+    });
+
+  getter.write([prefix, testId, 'does-not-exist'].join('/'));
+  getter.end();
+});

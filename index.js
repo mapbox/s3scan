@@ -28,6 +28,10 @@ module.exports.List = List;
  * @param {object} [options] - options to provide to the transform stream
  * @param {object} [options.agent] - an HTTPS agent to use for S3 requests
  * @param {object} [options.s3] - an S3 client to use to make requests
+ * @param {boolean} [options.passErrors] - if `true`, any error objects encountered
+ * will be passed into the readable stream
+ * @param {boolean} [options.keys] - if `true`, `.RequestParameters` (bucket and key)
+ * will be attached to the objects passed into the readable stream
  * @returns {object} a transform stream
  * @example
  * require('s3scan').Get('my-bucket')
@@ -63,6 +67,10 @@ module.exports.Delete = Delete;
  * @param {object} [options] - configuration options
  * @param {object} [options.agent] - an HTTPS agent to use for S3 requests
  * @param {object} [options.s3] - an S3 client to use to make requests
+ * @param {boolean} [options.passErrors] - if `true`, any error objects encountered
+ * will be passed into the readable stream
+ * @param {boolean} [options.keys] - if `true`, `.RequestParameters` (bucket and key)
+ * will be attached to the objects passed into the readable stream
  * @returns {object} a readable stream
  * @example
  * require('s3scan').Scan('s3://my-bucket/my-key')
