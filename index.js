@@ -131,3 +131,18 @@ module.exports.Purge = function(s3url, options, callback) {
   list.pipe(Split()).pipe(del);
   return del;
 };
+
+/**
+ * Provides a writable stream that accepts keys and copies them to another location.
+ *
+ * @name s3scan.Copy
+ * @param {string} fromBucket - the bucket to copy objects from
+ * @param {string} toBucket - the bucket to copy objects into
+ * @param {function} [keyTransform] - a function to transform keys. The
+ * function you provide should accept a source key and synchronously return the
+ * desired destination key. If not provided, objects in the `fromBucket` will be
+ * copied to the `toBucket` as-is.
+ * @param {object} [options] - options to provide to the writable stream.
+ * @returns {object} a writable stream
+ */
+module.exports.Copy = require('./lib/copy');

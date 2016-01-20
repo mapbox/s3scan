@@ -1,3 +1,19 @@
+## `s3scan.Copy`
+
+Provides a writable stream that accepts keys and copies them to another location.
+
+### Parameters
+
+* `fromBucket` **`string`** the bucket to copy objects from
+* `toBucket` **`string`** the bucket to copy objects into
+* `keyTransform` **`[function]`** a function to transform keys. The function you provide should accept a source key and synchronously return the desired destination key. If not provided, objects in the `fromBucket` will be copied to the `toBucket` as-is.
+* `options` **`[object]`** options to provide to the writable stream.
+
+
+
+Returns `object` a writable stream
+
+
 ## `s3scan.Delete`
 
 Provides a writable stream that expects you to write line-delimited S3 keys
