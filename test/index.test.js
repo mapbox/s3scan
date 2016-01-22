@@ -88,6 +88,31 @@ test('scan objects', function(assert) {
     });
 });
 
+test('copying fixtures - please be patient', function(assert) {
+  function keyTransform(key) {
+    return key + '-1';
+  }
+
+  var cp = s3scan.Copy(bucket, bucket, keyTransform, { agent: agent });
+  var ls = s3scan.List(uri, { agent: agent });
+  var objects = 0;
+
+  ls.pipe(cp)
+    .on('error', function(err) { assert.ifError(err, 'should not error'); })
+    .on('finish', function() {
+      assert.equal(cp.copied, Object.keys(fixtures).length, 'copy stream reports number of copied objects');
+      
+      s3scan.List(uri, { agent: agent })
+        .on('data', function(keys) {
+          objects += keys.toString().trim().split('\n').length;
+        })
+        .on('end', function() {
+          assert.equal(objects, 2 * Object.keys(fixtures).length, 'copied all objects');
+          assert.end();
+        });
+    });
+});
+
 test('[dryrun] purging fixtures - please be patient...', function(assert) {
   var deletedEvents = 0;
   var remainingObjects = 0;
@@ -102,8 +127,8 @@ test('[dryrun] purging fixtures - please be patient...', function(assert) {
         remainingObjects += keys.toString().trim().split('\n').length;
       })
       .on('end', function() {
-        assert.equal(deletedEvents, Object.keys(fixtures).length, 'all deleted events fired');
-        assert.equal(remainingObjects, Object.keys(fixtures).length, 'no items removed');
+        assert.equal(deletedEvents, 2 * Object.keys(fixtures).length, 'all deleted events fired');
+        assert.equal(remainingObjects, 2 * Object.keys(fixtures).length, 'no items removed');
         assert.end();
       });
   }).on('deleted', function() {
@@ -124,7 +149,7 @@ test('purging fixtures - please be patient...', function(assert) {
       Prefix: params.Key
     }, function(err, data) {
       if (err) throw err;
-      assert.equal(deletedEvents, Object.keys(fixtures).length, 'all deleted events fired');
+      assert.equal(deletedEvents, 2 * Object.keys(fixtures).length, 'all deleted events fired');
       assert.equal(data.Contents.length, 0, 'all items removed');
       assert.end();
     });
