@@ -2,6 +2,7 @@ var tape = require('tape');
 var http = require('http');
 var AWS = require('aws-sdk');
 var Get = require('../lib/get');
+var Keys = require('../lib/keys');
 
 function mock() {
   var server = http.createServer(function (req, res) {
@@ -9,7 +10,8 @@ function mock() {
 
     var routes = {
       timeout: /^\/timeout/,
-      truncated: /^\/truncated/
+      truncated: /^\/truncated/,
+      listTruncated: /^\/\?prefix=list-truncated/
     };
 
     if (routes.timeout.test(req.url)) {
@@ -21,7 +23,13 @@ function mock() {
 
     if (routes.truncated.test(req.url)) {
       res.writeHead(200, { 'Content-Length': 100 });
-      res.end('Not 100 characters');
+      res.write('Not 100 characters');
+      return req.socket.destroy();
+    }
+
+    if (routes.listTruncated.test(req.url)) {
+      res.writeHead(200, { 'Content-Length': 500 });
+      res.write('<ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>bucket</Name><Prefix>list-truncated</Prefix><Marker>next-one</Marker><MaxKeys>1000</MaxKeys><IsTruncated>true</IsTruncated><Contents><Key>first-one</Key><LastModified>2015-09-24T21:09:21.000Z</LastModified><ETag>&quot;9a194fc78eaede');
       return req.socket.destroy();
     }
 
@@ -74,7 +82,7 @@ test('[errors] timeout', function(assert) {
   get.end();
 });
 
-test('[errors] truncated', function(assert) {
+test('[errors] truncated get', function(assert) {
   var mock = this;
   var get = Get('-', { s3: mock.client });
   get.on('error', function(err) {
@@ -84,4 +92,19 @@ test('[errors] truncated', function(assert) {
   })
   get.write('truncated/some/key');
   get.end();
+});
+
+test('[errors] truncated list', function(assert) {
+  var mock = this;
+  var list = Keys('s3://bucket/list-truncated', { s3: mock.client });
+  list.on('error', function(err) {
+    assert.equal(err.code, 'TruncatedResponseError', 'truncated error');
+    assert.equal(mock.attempts, 4, 'tried 4 times');
+    assert.end();
+  });
+  list.on('end', function() {
+    assert.fail('should not complete successfully');
+    assert.end();
+  });
+  list.resume();
 });
