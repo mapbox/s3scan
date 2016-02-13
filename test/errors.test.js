@@ -94,11 +94,11 @@ test('[errors] truncated get', function(assert) {
   get.end();
 });
 
-test('[errors] truncated list', function(assert) {
+test('[errors] truncated list response', function(assert) {
   var mock = this;
   var list = Keys('s3://bucket/list-truncated', { s3: mock.client });
   list.on('error', function(err) {
-    assert.equal(err.code, 'TruncatedResponseError', 'truncated error');
+    assert.equal(err.code, 'XMLParserError', 'xml parsing error');
     assert.equal(mock.attempts, 4, 'tried 4 times');
     assert.end();
   });
