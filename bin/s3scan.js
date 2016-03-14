@@ -11,7 +11,7 @@ var argv = require('minimist')(process.argv);
 
 var s3url = argv._[2];
 if (!s3url) {
-  console.error('Usage: s3scan <s3url>');
+  console.error('Usage: s3scan <s3url> [--concurrency=num] [--gunzip]');
   process.exit(1);
 }
 
