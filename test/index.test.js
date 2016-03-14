@@ -12,6 +12,7 @@ var _ = require('underscore');
 var AWS = require('aws-sdk');
 var s3 = new AWS.S3({ httpOptions: { agent: agent } });
 var s3scan = require('..');
+var zlib = require('zlib');
 
 var bucket = process.env.TestBucket || 'mapbox';
 var prefix = process.env.TestPrefix || 's3scan-test';
@@ -21,10 +22,23 @@ var uri = ['s3:/', bucket, prefix, testId].join('/');
 console.log('\nTest uri: %s\n', uri);
 
 var fixtures = {};
-for (var i = 0; i < 2450; i++) {
-  var data = crypto.randomBytes(16);
-  fixtures[data.toString('hex')] = data;
-}
+test('gzip fixtures', function(assert) {
+  var queue = async();
+  for (var i = 0; i < 2450; i++) {
+    queue.defer(gzippify, crypto.randomBytes(16));
+  }
+  function gzippify(data, done) {
+    zlib.gzip(data, function(err, gzdata) {
+      if (err) return done(err);
+      fixtures[data.toString('hex')] = gzdata;
+      done();
+    });
+  }
+  queue.awaitAll(function(err) {
+    if (err) throw err;
+    assert.end();
+  });
+});
 
 test('load fixtures - please be patient...', function(assert) {
   var queue = async();
@@ -70,20 +84,96 @@ test('list keys', function(assert) {
 
 test('scan objects', function(assert) {
   var found = [];
+  var objects = [];
   var expected = Object.keys(fixtures);
 
   s3scan.Scan(uri, { agent: agent })
-    .on('error', function(err) {
-      assert.ifError(err, 'should not fail');
-    })
-    .on('data', function(data) {
-      var key = data.Body.toString('hex');
-      assert.ok(key in fixtures, 'expected ' + key);
-      found.push(key);
-    })
+    .on('error', function(err) { assert.ifError(err, 'should not fail'); })
+    .on('data', function(data) { objects.push(data.Body); })
     .on('end', function() {
-      assert.equal(found.length, Object.keys(fixtures).length, 'retrieved all objects');
-      assert.equal(_.difference(found, expected).length, 0, 'found all expected keys');
+      var queue = async();
+      for (var i = 0; i < objects.length; i++) {
+        queue.defer(gunzip, objects[i]);
+      }
+      function gunzip(zbody, done) {
+        zlib.gunzip(zbody, function(err, body) {
+          if (err) return done(err);
+          var key = body.toString('hex');
+          if (!key in fixtures) assert.ok(key in fixtures, 'expected ' + key);
+          found.push(key);
+          done();
+        });
+      }
+      queue.awaitAll(function(err) {
+        assert.ifError(err);
+        assert.equal(found.length, Object.keys(fixtures).length, 'retrieved all objects');
+        assert.equal(_.difference(found, expected).length, 0, 'found all expected keys');
+        assert.end();
+      });
+    });
+});
+
+test('scan objects, concurrency=1', function(assert) {
+  var found = [];
+  var objects = [];
+  var expected = Object.keys(fixtures);
+
+  s3scan.Scan(uri + '/0', { agent: agent, concurrency: 1 })
+    .on('error', function(err) { assert.ifError(err, 'should not fail'); })
+    .on('data', function(data) { objects.push(data.Body); })
+    .on('end', function() {
+      var queue = async();
+      for (var i = 0; i < objects.length; i++) {
+        queue.defer(gunzip, objects[i]);
+      }
+      function gunzip(zbody, done) {
+        zlib.gunzip(zbody, function(err, body) {
+          if (err) return done(err);
+          var key = body.toString('hex');
+          if (!key in fixtures) assert.ok(key in fixtures, 'expected ' + key);
+          found.push(key);
+          done();
+        });
+      }
+      queue.awaitAll(function(err) {
+        assert.ifError(err);
+        var keys = Object.keys(fixtures);
+        keys = keys.filter(function(k) { return k[0] === '0'; });
+        assert.equal(found.length, keys.length, 'retrieved all objects');
+        assert.deepEqual(found, keys.sort(), 'found all expected keys in ascending order');
+        assert.end();
+      });
+    });
+});
+
+test('scan objects, concurrency=1, gunzip', function(assert) {
+  var objects = [];
+  var expected = Object.keys(fixtures);
+
+  s3scan.Scan(uri + '/0', { agent: agent, concurrency: 1, gunzip: true })
+    .on('error', function(err) { assert.ifError(err, 'should not fail'); })
+    .on('data', function(data) { objects.push(data.Body.toString('hex')); })
+    .on('end', function() {
+      var keys = Object.keys(fixtures);
+      keys = keys.filter(function(k) { return k[0] === '0'; });
+      assert.equal(objects.length, keys.length, 'retrieved all objects');
+      assert.deepEqual(objects, keys.sort(), 'found all expected keys in ascending order');
+      assert.end();
+    });
+});
+
+test('scan objects, concurrency=1, gunzip, body', function(assert) {
+  var objects = [];
+  var expected = Object.keys(fixtures);
+
+  s3scan.Scan(uri + '/0', { agent: agent, concurrency: 1, gunzip: true, body: true })
+    .on('error', function(err) { assert.ifError(err, 'should not fail'); })
+    .on('data', function(data) { objects.push(data.toString('hex')); })
+    .on('end', function() {
+      var keys = Object.keys(fixtures);
+      keys = keys.filter(function(k) { return k[0] === '0'; });
+      assert.equal(objects.length, keys.length, 'retrieved all objects');
+      assert.deepEqual(objects, keys.sort(), 'found all expected keys in ascending order');
       assert.end();
     });
 });
