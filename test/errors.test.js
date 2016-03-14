@@ -94,6 +94,18 @@ test('[errors] truncated get', function(assert) {
   get.end();
 });
 
+test('[errors] truncated get, passErrors: true', function(assert) {
+  var mock = this;
+  var get = Get('-', { s3: mock.client, passErrors: true });
+  get.on('data', function(err) {
+    assert.equal(err.code, 'TruncatedResponseError', 'truncated error');
+    assert.equal(mock.attempts, 4, 'tried 4 times');
+    assert.end();
+  });
+  get.write('truncated/some/key');
+  get.end();
+});
+
 test('[errors] truncated list response', function(assert) {
   var mock = this;
   var list = Keys('s3://bucket/list-truncated', { s3: mock.client });

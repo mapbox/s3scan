@@ -82,6 +82,16 @@ test('list keys', function(assert) {
     });
 });
 
+test('scan objects (option errors)', function(assert) {
+  assert.throws(function() {
+    s3scan.Scan(uri, { body: true, keys: true });
+  }, /options\.body cannot be used with options\.keys/, 'throws with both options.body, options.keys');
+  assert.throws(function() {
+    s3scan.Scan(uri, { body: true, passErrors: true });
+  }, /options\.body cannot be used with options\.passErrors/, 'throws with both options.body, options.passErrors');
+  assert.end();
+});
+
 test('scan objects', function(assert) {
   var found = [];
   var objects = [];
@@ -110,6 +120,28 @@ test('scan objects', function(assert) {
         assert.equal(_.difference(found, expected).length, 0, 'found all expected keys');
         assert.end();
       });
+    });
+});
+
+test('scan objects, keys=true', function(assert) {
+  var objects = [];
+  var expected = Object.keys(fixtures);
+
+  s3scan.Scan(uri + '/0', { agent: agent, keys: true })
+    .on('error', function(err) { assert.ifError(err, 'should not fail'); })
+    .on('data', function(response) {
+      objects.push(response.RequestParameters);
+    })
+    .on('end', function() {
+      var found = objects.map(function(object) {
+        return object.Key.split('/').pop();
+      });
+      var keys = Object.keys(fixtures).filter(function(k) {
+        return k[0] === '0';
+      });
+      assert.equal(found.length, keys.length, 'retrieved all RequestParameters');
+      assert.deepEqual(found, keys.sort(), 'found all expected keys in ascending order');
+      assert.end();
     });
 });
 
