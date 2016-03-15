@@ -21,6 +21,14 @@ $ s3keys s3://my-bucket/some-prefix
 $ s3purge s3://my-bucket/all-finished-with-these
 ```
 
+**s3scan**: GET and print a prefix-worth of objects to stdout
+
+```sh
+$ s3scan s3://my-bucket/some-prefix
+$ s3scan s3://my-bucket/some-prefix --gunzip
+$ s3scan s3://my-bucket/some-prefix --gunzip --concurrency=1
+```
+
 ## Running tests
 
 You can run tests against your own bucket/prefix by specifying them as environment variables:
