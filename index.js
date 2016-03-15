@@ -32,6 +32,9 @@ module.exports.List = List;
  * will be passed into the readable stream
  * @param {boolean} [options.keys] - if `true`, `.RequestParameters` (bucket and key)
  * will be attached to the objects passed into the readable stream
+ * @param {boolean} [options.gunzip] - if `true`, gunzip each object body
+ * @param {boolean} [options.body] - if `true` stream only the object body from response objects
+ * @param {number} [options.concurrency] - concurrency at which to request objects
  * @returns {object} a transform stream
  * @example
  * require('s3scan').Get('my-bucket')
@@ -39,6 +42,14 @@ module.exports.List = List;
  *     console.log(JSON.stringify(d));
  *   })
  *   .write('some-key\n');
+ */
+
+/**
+ * Returns a get transform stream. Converts S3 keys to objects retrieved
+ * from a bucket via GET requests.
+ * @param {String} bucket
+ * @param {Object} options
+ * @param {Object} options.agent An http agent to use for requests
  */
 module.exports.Get = Get;
 

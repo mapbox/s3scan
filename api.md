@@ -1,4 +1,4 @@
-## `exports`
+## `Get`
 
 Returns a get transform stream. Converts S3 keys to objects retrieved
 from a bucket via GET requests.
@@ -8,11 +8,6 @@ from a bucket via GET requests.
 * `bucket` **`String`** 
 * `options` **`Object`** 
   * `options.agent` **`Object`** An http agent to use for requests
-  * `options.concurrency` **`Number`** Concurrency at which to request objects
-  * `options.keys` **`Boolean`** Include RequestParameters on response objects
-  * `options.gunzip` **`Boolean`** Gunzip each object body
-  * `options.body` **`Boolean`** Stream only the object body from response objects
-  * `options.passErrors` **`Boolean`** Include errors in object stream
 
 
 
@@ -67,6 +62,9 @@ into it, and transforms them into a readable stream of S3.getObject responses
   * `options.s3` **`[object]`** an S3 client to use to make requests
   * `options.passErrors` **`[boolean]`** if `true`, any error objects encountered will be passed into the readable stream
   * `options.keys` **`[boolean]`** if `true`, `.RequestParameters` (bucket and key) will be attached to the objects passed into the readable stream
+  * `options.gunzip` **`[boolean]`** if `true`, gunzip each object body
+  * `options.body` **`[boolean]`** if `true` stream only the object body from response objects
+  * `options.concurrency` **`[number]`** concurrency at which to request objects
 
 
 ### Examples
