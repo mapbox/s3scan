@@ -140,7 +140,7 @@ test('scan objects, keys=true', function(assert) {
         return k[0] === '0';
       });
       assert.equal(found.length, keys.length, 'retrieved all RequestParameters');
-      assert.deepEqual(found, keys.sort(), 'found all expected keys in ascending order');
+      assert.equal(_.difference(found, keys).length, 0, 'found all expected keys');
       assert.end();
     });
 });
