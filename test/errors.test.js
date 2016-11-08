@@ -11,7 +11,8 @@ function mock() {
     var routes = {
       timeout: /^\/timeout/,
       truncated: /^\/truncated/,
-      listTruncated: /^\/\?prefix=list-truncated/
+      listTruncated: /^\/\?prefix=list-truncated/,
+      empty: /^\/\?prefix=empty/
     };
 
     if (routes.timeout.test(req.url)) {
@@ -33,6 +34,11 @@ function mock() {
       return req.socket.destroy();
     }
 
+    if (routes.empty.test(req.url)) {
+      res.writeHead(200);
+      return res.end();
+    }
+    console.log(req.url);
     res.writeHead(404);
     res.end();
   });
@@ -112,6 +118,20 @@ test('[errors] truncated list response', function(assert) {
   list.on('error', function(err) {
     assert.equal(err.code, 'XMLParserError', 'xml parsing error');
     assert.equal(mock.attempts, 4, 'tried 4 times');
+    assert.end();
+  });
+  list.on('end', function() {
+    assert.fail('should not complete successfully');
+    assert.end();
+  });
+  list.resume();
+});
+
+test('[errors] truncated list response', function(assert) {
+  var mock = this;
+  var list = Keys('s3://bucket/empty/', { s3: mock.client });
+  list.on('error', function(err) {
+    assert.equal(err.message, 'Invalid SDK response');
     assert.end();
   });
   list.on('end', function() {
