@@ -127,11 +127,12 @@ test('[errors] truncated list response', function(assert) {
   list.resume();
 });
 
-test('[errors] truncated list response', function(assert) {
+test('[errors] no body in the response', function(assert) {
   var mock = this;
   var list = Keys('s3://bucket/empty/', { s3: mock.client });
   list.on('error', function(err) {
-    assert.equal(err.message, 'Invalid SDK response');
+    assert.equal(err.message, 'S3 API response contained no body');
+    assert.equal(mock.attempts, 4, 'tried 4 times');
     assert.end();
   });
   list.on('end', function() {
