@@ -82,6 +82,36 @@ test('list keys', function(assert) {
     });
 });
 
+test('list keys (objectMode)', function(assert) {
+  var found = [];
+  var expected = Object.keys(fixtures).map(function(key) {
+    return {
+      Bucket: bucket,
+      Key: [prefix, testId, key].join('/')
+    };
+  });
+
+  var keys = Object.keys(fixtures).reduce(function(keys, key) {
+    keys[[prefix, testId, key].join('/')] = true;
+    return keys;
+  }, {});
+
+  s3scan.List(uri, { agent: agent, objectMode: true })
+    .on('error', function(err) {
+      assert.ifError(err, 'should not fail');
+    })
+    .on('data', function(key) {
+      found.push(key);
+    })
+    .on('end', function() {
+      assert.equal(found.length, expected.length, 'listed the right number of keys');
+      assert.ok(found.every(function(item) {
+        return item.Bucket === bucket && !!keys[item.Key];
+      }), 'found all expected keys');
+      assert.end();
+    });
+});
+
 test('scan objects (option errors)', function(assert) {
   assert.throws(function() {
     s3scan.Scan(uri, { body: true, keys: true });
@@ -223,7 +253,7 @@ test('copying fixtures - please be patient', function(assert) {
     .on('error', function(err) { assert.ifError(err, 'should not error'); })
     .on('finish', function() {
       assert.equal(cp.copied, Object.keys(fixtures).length, 'copy stream reports number of copied objects');
-      
+
       s3scan.List(uri, { agent: agent })
         .on('data', function(keys) {
           objects += keys.toString().trim().split('\n').length;
