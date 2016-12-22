@@ -1,5 +1,5 @@
 {
-  "name": "s3scan",
+  "name": "@mapbox/s3scan",
   "version": "0.2.3",
   "description": "Streaming operations on S3 objects",
   "main": "index.js",
