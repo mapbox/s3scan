@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "eslint lib index.js && tape test/*.test.js",
-    "docs": "documentation -f md > api.md"
+    "docs": "documentation build -f md > api.md"
   },
   "bin": {
     "s3purge": "bin/s3purge.js",
