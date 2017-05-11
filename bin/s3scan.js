@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 
-var keepalive = require('agentkeepalive');
-var agent = new keepalive.HttpsAgent({
+var https = require('https');
+
+var agent = new https.Agent({
   keepAlive: true,
   maxSockets: Math.ceil(require('os').cpus().length * 16),
-  keepAliveTimeout: 60000
+  keepAliveMsecs: 60000
 });
 var s3scan = require('..');
 var argv = require('minimist')(process.argv);

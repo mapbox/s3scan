@@ -43,14 +43,6 @@ module.exports.List = List;
  *   })
  *   .write('some-key\n');
  */
-
-/**
- * Returns a get transform stream. Converts S3 keys to objects retrieved
- * from a bucket via GET requests.
- * @param {String} bucket
- * @param {Object} options
- * @param {Object} options.agent An http agent to use for requests
- */
 module.exports.Get = Get;
 
 /**
@@ -62,6 +54,7 @@ module.exports.Get = Get;
  * @param {object} [options] - options to provide to the writable stream
  * @param {object} [options.agent] - an HTTPS agent to use for S3 requests
  * @param {object} [options.s3] - an S3 client to use to make requests
+ * @param {number} [options.concurrency] - concurrency at which to delete objects
  * @returns {object} a writable stream
  * @example
  * require('s3scan').Delete('my-bucket')
@@ -78,6 +71,7 @@ module.exports.Delete = Delete;
  * @param {object} [options] - configuration options
  * @param {object} [options.agent] - an HTTPS agent to use for S3 requests
  * @param {object} [options.s3] - an S3 client to use to make requests
+ * @param {number} [options.concurrency] - concurrency at which to request objects
  * @param {boolean} [options.passErrors] - if `true`, any error objects encountered
  * will be passed into the readable stream
  * @param {boolean} [options.keys] - if `true`, `.RequestParameters` (bucket and key)
@@ -111,6 +105,7 @@ module.exports.Scan = function(s3url, options) {
  * @param {object} [options] - configuration options
  * @param {object} [options.agent] - an HTTPS agent to use for S3 requests
  * @param {object} [options.s3] - an S3 client to use to make requests
+ * @param {number} [options.concurrency] - concurrency at which to delete objects
  * @param {function} [callback] - a function to run on error or on completion of deletes
  * @returns {object} a writable stream
  * @example
@@ -154,6 +149,9 @@ module.exports.Purge = function(s3url, options, callback) {
  * desired destination key. If not provided, objects in the `fromBucket` will be
  * copied to the `toBucket` as-is.
  * @param {object} [options] - options to provide to the writable stream.
+ * @param {object} [options.agent] - an HTTPS agent to use for S3 requests
+ * @param {object} [options.s3] - an S3 client to use to make requests
+ * @param {number} [options.concurrency] - concurrency at which to copy objects
  * @returns {object} a writable stream
  */
 module.exports.Copy = require('./lib/copy');
