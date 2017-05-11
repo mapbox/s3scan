@@ -1,12 +1,12 @@
-var keepalive = require('agentkeepalive');
-var agent = new keepalive.HttpsAgent({
+var https = require('https');
+var agent = new https.Agent({
   keepAlive: true,
   maxSockets: Math.ceil(require('os').cpus().length * 16),
-  keepAliveTimeout: 60000
+  keepAliveMsecs: 60000
 });
 var test = require('tape');
 var crypto = require('crypto');
-var async = require('queue-async');
+var d3 = require('d3-queue');
 var s3urls = require('s3urls');
 var _ = require('underscore');
 var AWS = require('aws-sdk');
@@ -23,7 +23,7 @@ console.log('\nTest uri: %s\n', uri);
 
 var fixtures = {};
 test('gzip fixtures', function(assert) {
-  var queue = async();
+  var queue = d3.queue();
   for (var i = 0; i < 2450; i++) {
     queue.defer(gzippify, crypto.randomBytes(16));
   }
@@ -41,7 +41,7 @@ test('gzip fixtures', function(assert) {
 });
 
 test('load fixtures - please be patient...', function(assert) {
-  var queue = async();
+  var queue = d3.queue();
 
   Object.keys(fixtures).forEach(function(key) {
     var params = {
@@ -127,11 +127,11 @@ test('scan objects', function(assert) {
   var objects = [];
   var expected = Object.keys(fixtures);
 
-  s3scan.Scan(uri, { agent: agent })
+  s3scan.Scan(uri, { agent: agent, concurrency: 1000 })
     .on('error', function(err) { assert.ifError(err, 'should not fail'); })
     .on('data', function(data) { objects.push(data.Body); })
     .on('end', function() {
-      var queue = async();
+      var queue = d3.queue();
       for (var i = 0; i < objects.length; i++) {
         queue.defer(gunzip, objects[i]);
       }
@@ -157,7 +157,7 @@ test('scan objects, keys=true', function(assert) {
   var objects = [];
   var expected = Object.keys(fixtures);
 
-  s3scan.Scan(uri + '/0', { agent: agent, keys: true })
+  s3scan.Scan(uri + '/0', { agent: agent, keys: true, concurrency: 1000 })
     .on('error', function(err) { assert.ifError(err, 'should not fail'); })
     .on('data', function(response) {
       objects.push(response.RequestParameters);
@@ -184,7 +184,7 @@ test('scan objects, concurrency=1', function(assert) {
     .on('error', function(err) { assert.ifError(err, 'should not fail'); })
     .on('data', function(data) { objects.push(data.Body); })
     .on('end', function() {
-      var queue = async();
+      var queue = d3.queue();
       for (var i = 0; i < objects.length; i++) {
         queue.defer(gunzip, objects[i]);
       }
@@ -245,7 +245,7 @@ test('copying fixtures - please be patient', function(assert) {
     return key + '-1';
   }
 
-  var cp = s3scan.Copy(bucket, bucket, keyTransform, { agent: agent });
+  var cp = s3scan.Copy(bucket, bucket, keyTransform, { agent: agent, concurrency: 1000 });
   var ls = s3scan.List(uri, { agent: agent });
   var objects = 0;
 
@@ -291,7 +291,7 @@ test('[dryrun] purging fixtures - please be patient...', function(assert) {
 test('purging fixtures - please be patient...', function(assert) {
   var deletedEvents = 0;
 
-  s3scan.Purge(uri, agent, function(err) {
+  s3scan.Purge(uri, { agent: agent, concurrency: 1000 }, function(err) {
     assert.ifError(err, 'success');
 
     var params = s3urls.fromUrl(uri);
