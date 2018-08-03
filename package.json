@@ -4,7 +4,7 @@
   "description": "Streaming operations on S3 objects",
   "main": "index.js",
   "engines": {
-    "node": "^6.0.0"
+    "node": ">=8.10.0"
   },
   "scripts": {
     "test": "eslint lib index.js && tape test/*.test.js",
@@ -34,8 +34,8 @@
   },
   "devDependencies": {
     "d3-queue": "^3.0.7",
-    "documentation": "^4.0.0-rc.1",
-    "eslint": "^3.19.0",
+    "documentation": "^8.0.2",
+    "eslint": "^5.2.0",
     "eslint-config-unstyled": "^1.1.0",
     "tape": "^4.6.3",
     "underscore": "^1.8.3"
