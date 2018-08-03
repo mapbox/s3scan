@@ -1,6 +1,6 @@
 {
   "name": "@mapbox/s3scan",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Streaming operations on S3 objects",
   "main": "index.js",
   "engines": {
