@@ -12,6 +12,7 @@ var Delete = require('./lib/delete');
  * @param {object} [options] - options to provide to the readable stream
  * @param {object} [options.agent] - an HTTPS agent to use for S3 requests
  * @param {object} [options.s3] - an S3 client to use to make requests
+ * @param {object} [options.region] -  specify S3 region 
  * @returns {object} a readable stream of line-delimited keys
  * @example
  * require('s3scan').List('s3://my-bucket/my-key')
@@ -28,6 +29,7 @@ module.exports.List = List;
  * @param {object} [options] - options to provide to the transform stream
  * @param {object} [options.agent] - an HTTPS agent to use for S3 requests
  * @param {object} [options.s3] - an S3 client to use to make requests
+ * @param {object} [options.region] -  specify S3 region 
  * @param {boolean} [options.passErrors] - if `true`, any error objects encountered
  * will be passed into the readable stream
  * @param {boolean} [options.keys] - if `true`, `.RequestParameters` (bucket and key)
@@ -54,6 +56,7 @@ module.exports.Get = Get;
  * @param {object} [options] - options to provide to the writable stream
  * @param {object} [options.agent] - an HTTPS agent to use for S3 requests
  * @param {object} [options.s3] - an S3 client to use to make requests
+ * @param {object} [options.region] -  specify S3 region  
  * @param {number} [options.concurrency] - concurrency at which to delete objects
  * @returns {object} a writable stream
  * @example
@@ -71,6 +74,7 @@ module.exports.Delete = Delete;
  * @param {object} [options] - configuration options
  * @param {object} [options.agent] - an HTTPS agent to use for S3 requests
  * @param {object} [options.s3] - an S3 client to use to make requests
+ * @param {object} [options.region] -  specify S3 region 
  * @param {number} [options.concurrency] - concurrency at which to request objects
  * @param {boolean} [options.passErrors] - if `true`, any error objects encountered
  * will be passed into the readable stream
@@ -105,6 +109,7 @@ module.exports.Scan = function(s3url, options) {
  * @param {object} [options] - configuration options
  * @param {object} [options.agent] - an HTTPS agent to use for S3 requests
  * @param {object} [options.s3] - an S3 client to use to make requests
+ * @param {object} [options.region] -  specify S3 region 
  * @param {number} [options.concurrency] - concurrency at which to delete objects
  * @param {function} [callback] - a function to run on error or on completion of deletes
  * @returns {object} a writable stream
@@ -151,6 +156,7 @@ module.exports.Purge = function(s3url, options, callback) {
  * @param {object} [options] - options to provide to the writable stream.
  * @param {object} [options.agent] - an HTTPS agent to use for S3 requests
  * @param {object} [options.s3] - an S3 client to use to make requests
+ * @param {object} [options.region] -  specify S3 region 
  * @param {number} [options.concurrency] - concurrency at which to copy objects
  * @returns {object} a writable stream
  */
