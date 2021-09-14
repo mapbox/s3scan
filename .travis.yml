@@ -2,6 +2,9 @@ language: node_js
 node_js:
 - 6
 sudo: false
+before_script:
+- if ! [ -x "$(command -v aws)" ]; then curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" ; unzip awscliv2.zip ; sudo ./aws/install ; fi
+  - aws sts get-caller-identity
 env:
   global:
   - secure: d09jX+jfkxC06jGEE6WlnDRC9mbyidr72j/I1FyKl9w3c4YbMwDZ6pAfge7RFowti8kYMfESkdyZxK66sH81EdDaQDydLIIE0fe+D/637jJFJuFU4cy6SrhBKXeWQON6SzY11FZiPPaCCz05NBzNFolK0kvn9Lkpy4bGyBT/dACChDIQStlPyo5y/cbmSCdNyMgN652YYyNy0lXqEfoM5QPsNiVg0OhC86cvBBWWGHfZ+Min0O5b5OiOaRBb1sS/h6s6G/zgz+Ks8bcL9R+H/yxQesdYUE61UAN1Nr9cO0QuL+oA+Kcaa9tOSvNV8FcM/tbI8GjMlw1ZBuOYumLrDf/RULzAyvCXTl/3iUStylHMozIpYBEWB2Fg+EjhKhnVbTfOf+s/HandJZdSpNWIauqu4viqaKxQTbZBmo1k4LUcxSM540GduG4vJxNrXNl1j9HFpC7XNLF//nwIzp5WdqfTUky1P6YEqtJ93LpbUYYIdKLyuK8xyANFvZ+HNTgf7TLpKqER1UthNNSHPsmcwrMExSCJmK+b4x2FqM8TDoIyxRLIB/cVubzsVCJUzmuX9DKrAwXLRbAbRnY6eOCEN6RlCsTezEsjGLEGIzVNBBi4XapoKUVpHtNT3XlJd8Ul24zYg8L11w4CwiMePB4GPEb8IIr1rwHpESHUBmDhXJs=
