@@ -4,7 +4,7 @@
   "description": "Streaming operations on S3 objects",
   "main": "index.js",
   "engines": {
-    "node": "^6.0.0"
+    "node": ">=6"
   },
   "scripts": {
     "lint": "eslint lib index.js ",
