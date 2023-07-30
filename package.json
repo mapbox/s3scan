@@ -1,13 +1,14 @@
 {
   "name": "@mapbox/s3scan",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Streaming operations on S3 objects",
   "main": "index.js",
   "engines": {
     "node": "^6.0.0"
   },
   "scripts": {
-    "test": "eslint lib index.js && tape test/*.test.js",
+    "lint": "eslint lib index.js ",
+    "test": "npm run lint && tape test/*.test.js | tap-spec-emoji",
     "docs": "documentation build -f md > api.md"
   },
   "bin": {
@@ -34,9 +35,10 @@
   },
   "devDependencies": {
     "d3-queue": "^3.0.7",
-    "documentation": "^8.0.2",
+    "documentation": "^14.0.2",
     "eslint": "^5.2.0",
     "eslint-config-unstyled": "^1.1.0",
+    "tap-spec-emoji": "^6.1.2",
     "tape": "^4.6.3",
     "underscore": "^1.8.3"
   }
