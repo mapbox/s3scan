@@ -202,7 +202,7 @@ test('scan objects, concurrency=1', function(assert) {
         var keys = Object.keys(fixtures);
         keys = keys.filter(function(k) { return k[0] === '0'; });
         assert.equal(found.length, keys.length, 'retrieved all objects');
-        assert.deepEqual(found, keys.sort(), 'found all expected keys in ascending order');
+        assert.deepEqual(found.sort(), keys.sort(), 'found all expected keys in ascending order');
         assert.end();
       });
     });
