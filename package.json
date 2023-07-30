@@ -4,11 +4,11 @@
   "description": "Streaming operations on S3 objects",
   "main": "index.js",
   "engines": {
-    "node": ">=6"
+    "node": "^6.0.0"
   },
   "scripts": {
     "lint": "eslint lib index.js ",
-    "test": "npm run lint && tape test/*.test.js | tap-spec-emoji",
+    "test": "npm run lint && tape test/*.test.js",
     "docs": "documentation build -f md > api.md"
   },
   "bin": {
@@ -38,7 +38,6 @@
     "documentation": "^14.0.2",
     "eslint": "^5.2.0",
     "eslint-config-unstyled": "^1.1.0",
-    "tap-spec-emoji": "^6.1.2",
     "tape": "^4.6.3",
     "underscore": "^1.8.3"
   }

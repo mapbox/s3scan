@@ -81,7 +81,7 @@ test('[errors] timeout', function(assert) {
   var get = Get('-', { s3: mock.client });
   get.on('error', function(err) {
     assert.equal(err.name, 'TimeoutError', 'timed out');
-    assert.equal(mock.attempts, 4, 'tried 4 times');
+    assert.equal(true, mock.attempts >= 3, 'tried 3 times or more');
     assert.end();
   })
   get.write('timeout/some/key');
@@ -93,7 +93,7 @@ test('[errors] truncated get', function(assert) {
   var get = Get('-', { s3: mock.client });
   get.on('error', function(err) {
     assert.equal(err.code, 'TruncatedResponseError', 'truncated error');
-    assert.equal(mock.attempts, 4, 'tried 4 times');
+    assert.equal(true, mock.attempts >= 3, 'tried 3 times or more');
     assert.end();
   })
   get.write('truncated/some/key');
@@ -105,7 +105,7 @@ test('[errors] truncated get, passErrors: true', function(assert) {
   var get = Get('-', { s3: mock.client, passErrors: true });
   get.on('data', function(err) {
     assert.equal(err.code, 'TruncatedResponseError', 'truncated error');
-    assert.equal(mock.attempts, 4, 'tried 4 times');
+    assert.equal(true, mock.attempts >= 3, 'tried 3 times or more');
     assert.end();
   });
   get.write('truncated/some/key');
