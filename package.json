@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "d3-queue": "^3.0.7",
-    "documentation": "^8.0.2",
+    "documentation": "^14.0.2",
     "eslint": "^5.2.0",
     "eslint-config-unstyled": "^1.1.0",
     "tape": "^4.6.3",
