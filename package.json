@@ -1,13 +1,14 @@
 {
   "name": "@mapbox/s3scan",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Streaming operations on S3 objects",
   "main": "index.js",
   "engines": {
     "node": "^6.0.0"
   },
   "scripts": {
-    "test": "eslint lib index.js && tape test/*.test.js",
+    "lint": "eslint lib index.js ",
+    "test": "npm run lint && tape test/*.test.js",
     "docs": "documentation build -f md > api.md"
   },
   "bin": {

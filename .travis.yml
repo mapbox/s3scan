@@ -1,6 +1,4 @@
+dist: jammy
 language: node_js
 node_js:
-- 6
-sudo: false
-env:
-  global: []
+  - "18"
