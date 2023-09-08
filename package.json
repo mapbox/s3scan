@@ -1,20 +1,21 @@
 {
   "name": "@mapbox/s3scan",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "Streaming operations on S3 objects",
-  "main": "index.js",
+  "main": "dist/lib/index.js",
   "engines": {
     "node": "^6.0.0"
   },
   "scripts": {
+    "prebuild": "node -p \"'export const LIB_VERSION = ' + JSON.stringify(require('./package.json').version) + ';'\" > src/version.ts",
     "build": "npx tsc",
     "test": "eslint lib index.js && tape test/*.test.js",
     "docs": "documentation build -f md > api.md"
   },
   "bin": {
-    "s3purge": "bin/s3purge.js",
-    "s3keys": "bin/s3keys.js",
-    "s3scan": "bin/s3scan.js"
+    "s3purge": "dist/bin/s3Purge.js",
+    "s3keys": "dist/bin/s3Keys.js",
+    "s3scan": "dist/bin/s3Scan.js"
   },
   "author": "Mapbox",
   "license": "ISC",
@@ -27,6 +28,7 @@
   },
   "homepage": "https://github.com/mapbox/s3scan#readme",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.408.0",
     "aws-sdk": "^2.49.0",
     "commander": "^11.0.0",
     "figlet": "^1.6.0",
