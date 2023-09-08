@@ -9,7 +9,9 @@
   "scripts": {
     "prebuild": "node -p \"'export const LIB_VERSION = ' + JSON.stringify(require('./package.json').version) + ';'\" > src/version.ts",
     "build": "npx tsc",
-    "test": "eslint lib index.js && tape test/*.test.js",
+    "lint": "eslint --ext .js,.ts .",
+    "format": "prettier --write \"**/*.+(js|ts|json)\"",
+    "test": "tape test/*.test.js",
     "docs": "documentation build -f md > api.md"
   },
   "bin": {
@@ -41,10 +43,13 @@
   "devDependencies": {
     "@types/figlet": "^1.5.6",
     "@types/node": "^20.5.9",
+    "@typescript-eslint/eslint-plugin": "^6.6.0",
+    "@typescript-eslint/parser": "^6.6.0",
     "d3-queue": "^3.0.7",
     "documentation": "^8.0.2",
-    "eslint": "^5.2.0",
-    "eslint-config-unstyled": "^1.1.0",
+    "eslint": "^8.48.0",
+    "eslint-config-prettier": "^9.0.0",
+    "prettier": "^3.0.3",
     "tape": "^4.6.3",
     "underscore": "^1.8.3"
   }

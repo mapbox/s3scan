@@ -1,8 +1,8 @@
-var s3urls = require('s3urls');
-var Split = require('split');
-var List = require('./lib/keys');
-var Get = require('./lib/get');
-var Delete = require('./lib/delete');
+var s3urls = require('s3urls')
+var Split = require('split')
+var List = require('./lib/keys')
+var Get = require('./lib/get')
+var Delete = require('./lib/delete')
 
 /**
  * Provides a readable stream of keys beneath the provided S3 prefix
@@ -17,7 +17,7 @@ var Delete = require('./lib/delete');
  * require('s3scan').List('s3://my-bucket/my-key')
  *   .pipe(process.stdout);
  */
-module.exports.List = List;
+module.exports.List = List
 
 /**
  * Provides a transform stream that expects you to write line-delimited S3 keys
@@ -43,7 +43,7 @@ module.exports.List = List;
  *   })
  *   .write('some-key\n');
  */
-module.exports.Get = Get;
+module.exports.Get = Get
 
 /**
  * Provides a writable stream that expects you to write line-delimited S3 keys
@@ -60,7 +60,7 @@ module.exports.Get = Get;
  * require('s3scan').Delete('my-bucket')
  *   .write('some-key\n');
  */
-module.exports.Delete = Delete;
+module.exports.Delete = Delete
 
 /**
  * Provides a readable stream of S3.getObject responses for all keys beneath the
@@ -83,19 +83,18 @@ module.exports.Delete = Delete;
  *     console.log(JSON.stringify(d));
  *   });
  */
-module.exports.Scan = function(s3url, options) {
-  var bucket = s3urls.fromUrl(s3url).Bucket;
-  if (!bucket) throw new Error('Invalid s3url');
+module.exports.Scan = function (s3url, options) {
+  var bucket = s3urls.fromUrl(s3url).Bucket
+  if (!bucket) throw new Error('Invalid s3url')
 
-  var get = Get(bucket, options);
-  var list = List(s3url, options)
-    .on('error', function(err) {
-      get.emit('error', err);
-    });
+  var get = Get(bucket, options)
+  var list = List(s3url, options).on('error', function (err) {
+    get.emit('error', err)
+  })
 
-  list.pipe(Split()).pipe(get);
-  return get;
-};
+  list.pipe(Split()).pipe(get)
+  return get
+}
 
 /**
  * Deletes all objects beneath an S3 prefix
@@ -114,29 +113,28 @@ module.exports.Scan = function(s3url, options) {
  *   console.log('deleted all the things!');
  * });
  */
-module.exports.Purge = function(s3url, options, callback) {
+module.exports.Purge = function (s3url, options, callback) {
   if (typeof options === 'function') {
-    callback = options;
-    options = {};
+    callback = options
+    options = {}
   }
 
-  var bucket = s3urls.fromUrl(s3url).Bucket;
-  if (!bucket) throw new Error('Invalid s3url');
+  var bucket = s3urls.fromUrl(s3url).Bucket
+  if (!bucket) throw new Error('Invalid s3url')
 
   function done(err) {
-    if (callback) return callback(err);
-    if (err) throw err;
+    if (callback) return callback(err)
+    if (err) throw err
   }
 
   var del = Delete(bucket, options)
-    .on('error', callback || function() {})
-    .on('finish', callback || function() {});
-  var list = List(s3url, options)
-    .on('error', callback || function() {});
+    .on('error', callback || function () {})
+    .on('finish', callback || function () {})
+  var list = List(s3url, options).on('error', callback || function () {})
 
-  list.pipe(Split()).pipe(del);
-  return del;
-};
+  list.pipe(Split()).pipe(del)
+  return del
+}
 
 /**
  * Provides a writable stream that accepts keys and copies them to another location.
@@ -154,4 +152,4 @@ module.exports.Purge = function(s3url, options, callback) {
  * @param {number} [options.concurrency] - concurrency at which to copy objects
  * @returns {object} a writable stream
  */
-module.exports.Copy = require('./lib/copy');
+module.exports.Copy = require('./lib/copy')

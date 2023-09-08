@@ -1,0 +1,7 @@
+node_modules/
+.prettierrc.json
+.gitignore
+test/*.js
+dist/
+lib/*.js
+index.js
