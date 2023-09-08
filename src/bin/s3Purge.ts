@@ -25,7 +25,7 @@ var interval: NodeJS.Timeout
 const { quiet, dryrun } = program.opts()
 const purge = S3Scan.Purge(s3Url, options, (err) => {
         if (!quiet) clearInterval(interval)
-        setTimeout(function() {
+        setTimeout(() => {
         console.log(quiet ? purge.deletedCount : '');
         if (err) throw err;
         else process.exit(0);
