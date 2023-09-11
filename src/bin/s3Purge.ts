@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 
-import { Command } from 'commander'
-import { LIB_VERSION } from '../version'
-import { S3Scan, S3_SCAN_HTTPS_AGENT } from '../lib'
+import { Command } from 'commander';
+import { LIB_VERSION } from '../version';
+import { S3Scan, S3_SCAN_HTTPS_AGENT } from '../lib';
+import { S3ScanCLIOptions } from './s3ScanCliOptions';
 
-const program = new Command()
+const program = new Command();
 
 program
   .version(LIB_VERSION)
@@ -21,35 +22,42 @@ program
     false,
   )
   .option('-c, --concurrency  [number]', 'Concurrency to use')
-  .parse(process.argv)
+  .parse(process.argv);
 
-const options = { agent: S3_SCAN_HTTPS_AGENT, body: true, ...program.opts() }
-const s3Url = program.args[0]
-const { quiet, dryrun } = program.opts()
+const { concurrency, dryrun, quiet } = program.opts();
+const options: S3ScanCLIOptions = {
+  agent: S3_SCAN_HTTPS_AGENT,
+  body: true,
+  concurrency,
+  dryrun,
+  quiet,
+};
+const s3Url = program.args[0];
+
 const interval: NodeJS.Timeout | undefined =
   !quiet && !dryrun
     ? setInterval(function () {
         process.stdout.write(
           `[KDeleted ${purge.deletedCount} @ ${purge.rate()}/s`,
-        )
+        );
       }, 500)
-    : undefined
+    : undefined;
 
 const purge = S3Scan.Purge(s3Url, options, err => {
-  if (!quiet) clearInterval(interval)
+  if (!quiet) clearInterval(interval);
   setTimeout(() => {
     if (!quiet) {
       console.log(purge.deletedCount);
     }
-    if (err) throw err
-    else process.exit(0)
-  }, 600)
-})
+    if (err) throw err;
+    else process.exit(0);
+  }, 600);
+});
 
-purge.stream.pipe(process.stdout)
+purge.stream.pipe(process.stdout);
 
 if (!quiet && !dryrun) {
   setInterval(function () {
-    process.stdout.write(`[KDeleted ${purge.deletedCount} @ ${purge.rate()}/s`)
-  }, 500)
+    process.stdout.write(`[KDeleted ${purge.deletedCount} @ ${purge.rate()}/s`);
+  }, 500);
 }

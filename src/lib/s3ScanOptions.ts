@@ -1,6 +1,6 @@
-import * as http from 'http'
-import { S3Client } from '@aws-sdk/client-s3'
-import { int } from 'aws-sdk/clients/datapipeline'
+import * as http from 'http';
+import { S3Client } from '@aws-sdk/client-s3';
+import { int } from 'aws-sdk/clients/datapipeline';
 
 /***
  * Options to provide to the readable stream for S3ScanList
@@ -9,29 +9,29 @@ export interface S3ScanOptions {
   /**
    * an HTTPS agent to use for S3 requests
    */
-  agent: http.Agent
+  agent: http.Agent;
   /**
    * an S3 client to use to make requests
    */
-  s3: S3Client
+  s3: S3Client;
   /**
    * if `true`, any error objects encountered will be passed into the readable stream
    */
-  passError?: boolean
+  passError?: boolean;
   /**
    * if `true`, `.RequestParameters` (bucket and key) will be attached to the objects passed into the readable stream
    */
-  keys?: boolean
+  keys?: boolean;
   /**
    * if `true`, gunzip each object body
    */
-  gunzip?: boolean
+  gunzip?: boolean;
   /**
    * if `true` stream only the object body from response objects
    */
-  body?: boolean
+  body?: boolean;
   /**
    * concurrency at which to request objects
    */
-  concurrency?: int
+  concurrency?: int;
 }

@@ -1,12 +1,11 @@
 #!/usr/bin/env node
 
-import { Command } from 'commander'
-import * as figlet from 'figlet'
-import { LIB_VERSION } from '../version'
-import { S3Scan, S3_SCAN_HTTPS_AGENT } from '../lib'
+import { Command } from 'commander';
+import { LIB_VERSION } from '../version';
+import { S3Scan, S3_SCAN_HTTPS_AGENT } from '../lib';
+import { S3ScanCLIOptions } from './s3ScanCliOptions';
 
-const program = new Command()
-console.log(figlet.textSync(`S3 Scan ${LIB_VERSION}`))
+const program = new Command();
 
 program
   .version(LIB_VERSION)
@@ -19,8 +18,14 @@ program
     false,
   )
   .option('-c, --concurrency  [number]', 'Concurrency to use')
-  .parse(process.argv)
+  .parse(process.argv);
 
-const options = { agent: S3_SCAN_HTTPS_AGENT, body: true, ...program.opts() }
-const s3Url = program.args[0]
-S3Scan.Scan(s3Url, options).pipe(process.stdout)
+const { concurrency, gunzip } = program.opts();
+const options: S3ScanCLIOptions = {
+  agent: S3_SCAN_HTTPS_AGENT,
+  body: true,
+  concurrency,
+  gunzip,
+};
+const s3Url = program.args[0];
+S3Scan.Scan(s3Url, options).pipe(process.stdout);
