@@ -4,15 +4,14 @@
   "description": "Streaming operations on S3 objects",
   "main": "dist/lib/index.js",
   "engines": {
-    "node": "^6.0.0"
+    "node": "^18.0"
   },
   "scripts": {
     "prebuild": "node -p \"'export const LIB_VERSION = ' + JSON.stringify(require('./package.json').version) + ';'\" > src/version.ts",
     "build": "npx tsc",
     "lint": "eslint --ext .js,.ts .",
     "format": "prettier --write \"**/*.+(js|ts|json)\"",
-    "test": "tape test/*.test.js",
-    "docs": "documentation build -f md > api.md"
+    "test": "jest"
   },
   "bin": {
     "s3purge": "dist/bin/s3Purge.js",
@@ -31,24 +30,25 @@
   "homepage": "https://github.com/mapbox/s3scan#readme",
   "dependencies": {
     "@aws-sdk/client-s3": "^3.408.0",
-    "aws-sdk": "^2.49.0",
+    "amazon-s3-uri": "^0.1.1",
     "commander": "^11.0.0",
     "minimist": "^1.2.0",
     "parallel-stream": "^1.1.2",
-    "s3urls": "^1.5.2",
-    "split": "^1.0.0",
+    "tslog": "^4.9.2",
     "typescript": "^5.2.2"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.4",
     "@types/node": "^20.5.9",
     "@typescript-eslint/eslint-plugin": "^6.6.0",
     "@typescript-eslint/parser": "^6.6.0",
     "d3-queue": "^3.0.7",
-    "documentation": "^8.0.2",
     "eslint": "^8.48.0",
     "eslint-config-prettier": "^9.0.0",
+    "jest": "^29.6.4",
     "prettier": "^3.0.3",
-    "tape": "^4.6.3",
+    "ts-jest": "^29.1.1",
+    "ts-node": "^10.9.1",
     "underscore": "^1.8.3"
   }
 }

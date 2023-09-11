@@ -1,21 +1,68 @@
-import { Float } from 'aws-sdk/clients/batch';
-import { int } from 'aws-sdk/clients/datapipeline';
 import * as Stream from 'stream';
 import { S3ScanCLIOptions } from '../bin';
+import { S3Client, S3ClientConfig } from '@aws-sdk/client-s3';
+import { Logger } from 'tslog';
+const AmazonS3URI = require('amazon-s3-uri');
 
 export interface S3ScanPurgeReturn {
   stream: Stream.Transform;
-  deletedCount: int;
-  rate: () => Float;
+  deletedCount: number;
+  rate: () => number;
 }
 
 export class S3Scan {
+  static logger = new Logger();
+
+  static getS3Client() {
+    const s3_config: S3ClientConfig = {
+      maxAttempts: 10,
+      logger: this.logger,
+    };
+    return new S3Client(s3_config);
+  }
+
+  static validateS3URL(s3URL: string) {
+    try {
+      return AmazonS3URI(s3URL);
+    } catch (err) {
+      this.logger.error(`${s3URL} is not a valid s3 uri`);
+    }
+  }
+
   public static Copy() {
     //Todo: Implentation Left
   }
 
   public static Delete() {
     //Todo: Implentation Left
+  }
+
+  public static Get(s3Url: string) {
+    //Todo: Implentation Left
+  }
+
+  public static Keys(
+    s3Url: string,
+    options: S3ScanCLIOptions,
+  ): Stream.Readable {
+    //Todo: Implentation Left
+    const readableStream = new Stream.Readable();
+    readableStream.push(`s3URL: ${s3Url}`);
+    readableStream.push(`options: ${JSON.stringify(options)}`);
+    readableStream.push(null);
+    return readableStream;
+  }
+
+  public static Scan(
+    s3Url: string,
+    options: S3ScanCLIOptions,
+  ): Stream.Readable {
+    //Todo: Implementation Left
+    const readableStream = new Stream.Readable();
+    readableStream.push(`s3URL: ${s3Url}`);
+    readableStream.push(`options: ${JSON.stringify(options)}`);
+    readableStream.push(null);
+    return readableStream;
   }
 
   public static Purge(
@@ -45,33 +92,5 @@ export class S3Scan {
       deletedCount: 0,
       stream: writableStream,
     };
-  }
-
-  public static Get() {
-    //Todo: Implentation Left
-  }
-
-  public static List(
-    s3Url: string,
-    options: S3ScanCLIOptions,
-  ): Stream.Readable {
-    //Todo: Implentation Left
-    const readableStream = new Stream.Readable();
-    readableStream.push(`s3URL: ${s3Url}`);
-    readableStream.push(`options: ${JSON.stringify(options)}`);
-    readableStream.push(null);
-    return readableStream;
-  }
-
-  public static Scan(
-    s3Url: string,
-    options: S3ScanCLIOptions,
-  ): Stream.Readable {
-    //Todo: Implementation Left
-    const readableStream = new Stream.Readable();
-    readableStream.push(`s3URL: ${s3Url}`);
-    readableStream.push(`options: ${JSON.stringify(options)}`);
-    readableStream.push(null);
-    return readableStream;
   }
 }

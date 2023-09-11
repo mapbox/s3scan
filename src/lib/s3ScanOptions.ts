@@ -1,6 +1,5 @@
 import * as http from 'http';
 import { S3Client } from '@aws-sdk/client-s3';
-import { int } from 'aws-sdk/clients/datapipeline';
 
 /***
  * Options to provide to the readable stream for S3ScanList
@@ -33,5 +32,5 @@ export interface S3ScanOptions {
   /**
    * concurrency at which to request objects
    */
-  concurrency?: int;
+  concurrency?: number;
 }

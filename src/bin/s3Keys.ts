@@ -16,4 +16,4 @@ program
 
 const options: S3ScanCLIOptions = { agent: S3_SCAN_HTTPS_AGENT };
 const s3Url = program.args[0];
-S3Scan.List(s3Url, options).pipe(process.stdout);
+S3Scan.Keys(s3Url, options).pipe(process.stdout);
