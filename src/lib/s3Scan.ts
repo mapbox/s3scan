@@ -21,12 +21,8 @@ export class S3Scan {
     return new S3Client(s3_config);
   }
 
-  static validateS3URL(s3URL: string) {
-    try {
+  public static validateS3URL(s3URL: string) {
       return AmazonS3URI(s3URL);
-    } catch (err) {
-      this.logger.error(`${s3URL} is not a valid s3 uri`);
-    }
   }
 
   public static Copy() {
@@ -37,7 +33,7 @@ export class S3Scan {
     //Todo: Implentation Left
   }
 
-  public static Get(s3Url: string) {
+  public static Get() {
     //Todo: Implentation Left
   }
 
