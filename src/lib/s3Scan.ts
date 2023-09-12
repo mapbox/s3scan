@@ -2,8 +2,10 @@ import * as Stream from 'stream';
 import { S3ScanCLIOptions } from '../bin';
 import { S3Client, S3ClientConfig } from '@aws-sdk/client-s3';
 import { Logger } from 'tslog';
-const AmazonS3URI = require('amazon-s3-uri');
+import AmazonS3URI from 'amazon-s3-uri';
 
+
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface S3ScanPurgeReturn {
   stream: Stream.Transform;
   deletedCount: number;
