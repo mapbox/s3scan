@@ -4,7 +4,7 @@ import { S3Client } from '@aws-sdk/client-s3';
 /***
  * Options to provide to the readable stream for S3ScanList
  */
-export interface S3ScanOptions {
+export type S3ScanOptions = {
   /**
    * an HTTPS agent to use for S3 requests
    */

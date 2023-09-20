@@ -4,7 +4,7 @@ describe('Testing S3Scan Class', () => {
 
   describe('Testing S3Scan validateS3URL', () => {
 
-    it('Should not throw an error with an invalid s3 URL', () => {
+    it('Should not throw an error with a valid s3 URL', () => {
       const { bucket, key } =
         S3Scan.validateS3URL(`s3://mapbox/staging/orc/metrics_traces/dt=2018-07-18/`)
       expect(bucket).toEqual('mapbox')
