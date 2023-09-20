@@ -10,7 +10,7 @@ const program = new Command();
 program
   .version(LIB_VERSION)
   .description('A tool to list all keys in a bucket/prefix')
-  .usage(`Usage: s3scan <s3url> [--concurrency=num] [--gunzip]`)
+  .usage('Usage: s3scan <s3url> [--concurrency=num] [--gunzip]')
   .argument('<s3Url>', 'an S3 uri of the type s3://bucket/prefix')
   .option(
     '-g, --gunzip [boolean]',
