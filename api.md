@@ -2,53 +2,66 @@
 
 ### Table of Contents
 
--   [s3scan.List](#s3scanlist)
--   [s3scan.Get](#s3scanget)
--   [s3scan.Delete](#s3scandelete)
--   [s3scan.Scan](#s3scanscan)
--   [s3scan.Purge](#s3scanpurge)
--   [s3scan.Copy](#s3scancopy)
+*   [s3scan.List][1]
+    *   [Parameters][2]
+    *   [Examples][3]
+*   [s3scan.Get][4]
+    *   [Parameters][5]
+    *   [Examples][6]
+*   [s3scan.Delete][7]
+    *   [Parameters][8]
+    *   [Examples][9]
+*   [s3scan.Scan][10]
+    *   [Parameters][11]
+    *   [Examples][12]
+*   [s3scan.Purge][13]
+    *   [Parameters][14]
+    *   [Examples][15]
+*   [s3scan.Copy][16]
+    *   [Parameters][17]
 
 ## s3scan.List
 
 Provides a readable stream of keys beneath the provided S3 prefix
 
-**Parameters**
+### Parameters
 
--   `s3url` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** an S3 uri of the type `s3://bucket/prefix`
--   `options` **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)?** options to provide to the readable stream
-    -   `options.agent` **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)?** an HTTPS agent to use for S3 requests
-    -   `options.s3` **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)?** an S3 client to use to make requests
+*   `s3url` **[string][18]** an S3 uri of the type `s3://bucket/prefix`
+*   `options` **[object][19]?** options to provide to the readable stream
 
-**Examples**
+    *   `options.agent` **[object][19]?** an HTTPS agent to use for S3 requests
+    *   `options.s3` **[object][19]?** an S3 client to use to make requests
+
+### Examples
 
 ```javascript
 require('s3scan').List('s3://my-bucket/my-key')
   .pipe(process.stdout);
 ```
 
-Returns **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** a readable stream of line-delimited keys
+Returns **[object][19]** a readable stream of line-delimited keys
 
 ## s3scan.Get
 
 Provides a transform stream that expects you to write line-delimited S3 keys
 into it, and transforms them into a readable stream of S3.getObject responses
 
-**Parameters**
+### Parameters
 
--   `bucket` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** the S3 bucket from which to fetch keys
--   `options` **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)?** options to provide to the transform stream
-    -   `options.agent` **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)?** an HTTPS agent to use for S3 requests
-    -   `options.s3` **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)?** an S3 client to use to make requests
-    -   `options.passErrors` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** if `true`, any error objects encountered
+*   `bucket` **[string][18]** the S3 bucket from which to fetch keys
+*   `options` **[object][19]?** options to provide to the transform stream
+
+    *   `options.agent` **[object][19]?** an HTTPS agent to use for S3 requests
+    *   `options.s3` **[object][19]?** an S3 client to use to make requests
+    *   `options.passErrors` **[boolean][20]?** if `true`, any error objects encountered
         will be passed into the readable stream
-    -   `options.keys` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** if `true`, `.RequestParameters` (bucket and key)
+    *   `options.keys` **[boolean][20]?** if `true`, `.RequestParameters` (bucket and key)
         will be attached to the objects passed into the readable stream
-    -   `options.gunzip` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** if `true`, gunzip each object body
-    -   `options.body` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** if `true` stream only the object body from response objects
-    -   `options.concurrency` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)?** concurrency at which to request objects
+    *   `options.gunzip` **[boolean][20]?** if `true`, gunzip each object body
+    *   `options.body` **[boolean][20]?** if `true` stream only the object body from response objects
+    *   `options.concurrency` **[number][21]?** concurrency at which to request objects
 
-**Examples**
+### Examples
 
 ```javascript
 require('s3scan').Get('my-bucket')
@@ -58,48 +71,50 @@ require('s3scan').Get('my-bucket')
   .write('some-key\n');
 ```
 
-Returns **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** a transform stream
+Returns **[object][19]** a transform stream
 
 ## s3scan.Delete
 
 Provides a writable stream that expects you to write line-delimited S3 keys
 into it, and performs an S3.deleteObject request on each key
 
-**Parameters**
+### Parameters
 
--   `bucket` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** the S3 bucket from which to fetch keys
--   `options` **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)?** options to provide to the writable stream
-    -   `options.agent` **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)?** an HTTPS agent to use for S3 requests
-    -   `options.s3` **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)?** an S3 client to use to make requests
-    -   `options.concurrency` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)?** concurrency at which to delete objects
+*   `bucket` **[string][18]** the S3 bucket from which to fetch keys
+*   `options` **[object][19]?** options to provide to the writable stream
 
-**Examples**
+    *   `options.agent` **[object][19]?** an HTTPS agent to use for S3 requests
+    *   `options.s3` **[object][19]?** an S3 client to use to make requests
+    *   `options.concurrency` **[number][21]?** concurrency at which to delete objects
+
+### Examples
 
 ```javascript
 require('s3scan').Delete('my-bucket')
   .write('some-key\n');
 ```
 
-Returns **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** a writable stream
+Returns **[object][19]** a writable stream
 
 ## s3scan.Scan
 
 Provides a readable stream of S3.getObject responses for all keys beneath the
 provided S3 prefix
 
-**Parameters**
+### Parameters
 
--   `s3url` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** an S3 uri of the type `s3://bucket/prefix`
--   `options` **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)?** configuration options
-    -   `options.agent` **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)?** an HTTPS agent to use for S3 requests
-    -   `options.s3` **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)?** an S3 client to use to make requests
-    -   `options.concurrency` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)?** concurrency at which to request objects
-    -   `options.passErrors` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** if `true`, any error objects encountered
+*   `s3url` **[string][18]** an S3 uri of the type `s3://bucket/prefix`
+*   `options` **[object][19]?** configuration options
+
+    *   `options.agent` **[object][19]?** an HTTPS agent to use for S3 requests
+    *   `options.s3` **[object][19]?** an S3 client to use to make requests
+    *   `options.concurrency` **[number][21]?** concurrency at which to request objects
+    *   `options.passErrors` **[boolean][20]?** if `true`, any error objects encountered
         will be passed into the readable stream
-    -   `options.keys` **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)?** if `true`, `.RequestParameters` (bucket and key)
+    *   `options.keys` **[boolean][20]?** if `true`, `.RequestParameters` (bucket and key)
         will be attached to the objects passed into the readable stream
 
-**Examples**
+### Examples
 
 ```javascript
 require('s3scan').Scan('s3://my-bucket/my-key')
@@ -108,22 +123,23 @@ require('s3scan').Scan('s3://my-bucket/my-key')
   });
 ```
 
-Returns **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** a readable stream
+Returns **[object][19]** a readable stream
 
 ## s3scan.Purge
 
 Deletes all objects beneath an S3 prefix
 
-**Parameters**
+### Parameters
 
--   `s3url` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** an S3 uri of the type `s3://bucket/prefix`
--   `options` **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)?** configuration options
-    -   `options.agent` **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)?** an HTTPS agent to use for S3 requests
-    -   `options.s3` **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)?** an S3 client to use to make requests
-    -   `options.concurrency` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)?** concurrency at which to delete objects
--   `callback` **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)?** a function to run on error or on completion of deletes
+*   `s3url` **[string][18]** an S3 uri of the type `s3://bucket/prefix`
+*   `options` **[object][19]?** configuration options
 
-**Examples**
+    *   `options.agent` **[object][19]?** an HTTPS agent to use for S3 requests
+    *   `options.s3` **[object][19]?** an S3 client to use to make requests
+    *   `options.concurrency` **[number][21]?** concurrency at which to delete objects
+*   `callback` **[function][22]?** a function to run on error or on completion of deletes
+
+### Examples
 
 ```javascript
 require('s3scan').Purge('s3://my-bucket/my-key', function(err) {
@@ -132,23 +148,68 @@ require('s3scan').Purge('s3://my-bucket/my-key', function(err) {
 });
 ```
 
-Returns **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** a writable stream
+Returns **[object][19]** a writable stream
 
 ## s3scan.Copy
 
 Provides a writable stream that accepts keys and copies them to another location.
 
-**Parameters**
+### Parameters
 
--   `fromBucket` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** the bucket to copy objects from
--   `toBucket` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** the bucket to copy objects into
--   `keyTransform` **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)?** a function to transform keys. The
+*   `fromBucket` **[string][18]** the bucket to copy objects from
+*   `toBucket` **[string][18]** the bucket to copy objects into
+*   `keyTransform` **[function][22]?** a function to transform keys. The
     function you provide should accept a source key and synchronously return the
     desired destination key. If not provided, objects in the `fromBucket` will be
     copied to the `toBucket` as-is.
--   `options` **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)?** options to provide to the writable stream.
-    -   `options.agent` **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)?** an HTTPS agent to use for S3 requests
-    -   `options.s3` **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)?** an S3 client to use to make requests
-    -   `options.concurrency` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)?** concurrency at which to copy objects
+*   `options` **[object][19]?** options to provide to the writable stream.
 
-Returns **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** a writable stream
+    *   `options.agent` **[object][19]?** an HTTPS agent to use for S3 requests
+    *   `options.s3` **[object][19]?** an S3 client to use to make requests
+    *   `options.concurrency` **[number][21]?** concurrency at which to copy objects
+
+Returns **[object][19]** a writable stream
+
+[1]: #s3scanlist
+
+[2]: #parameters
+
+[3]: #examples
+
+[4]: #s3scanget
+
+[5]: #parameters-1
+
+[6]: #examples-1
+
+[7]: #s3scandelete
+
+[8]: #parameters-2
+
+[9]: #examples-2
+
+[10]: #s3scanscan
+
+[11]: #parameters-3
+
+[12]: #examples-3
+
+[13]: #s3scanpurge
+
+[14]: #parameters-4
+
+[15]: #examples-4
+
+[16]: #s3scancopy
+
+[17]: #parameters-5
+
+[18]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+
+[19]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+
+[20]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+
+[21]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+
+[22]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/function
