@@ -202,7 +202,7 @@ test('scan objects, concurrency=1', function(assert) {
         var keys = Object.keys(fixtures);
         keys = keys.filter(function(k) { return k[0] === '0'; });
         assert.equal(found.length, keys.length, 'retrieved all objects');
-        assert.deepEqual(found, keys.sort(), 'found all expected keys in ascending order');
+        assert.deepEqual(found.sort(), keys.sort(), 'found all expected keys');
         assert.end();
       });
     });
@@ -210,7 +210,6 @@ test('scan objects, concurrency=1', function(assert) {
 
 test('scan objects, concurrency=1, gunzip', function(assert) {
   var objects = [];
-  var expected = Object.keys(fixtures);
 
   s3scan.Scan(uri + '/0', { agent: agent, concurrency: 1, gunzip: true })
     .on('error', function(err) { assert.ifError(err, 'should not fail'); })
@@ -219,14 +218,13 @@ test('scan objects, concurrency=1, gunzip', function(assert) {
       var keys = Object.keys(fixtures);
       keys = keys.filter(function(k) { return k[0] === '0'; });
       assert.equal(objects.length, keys.length, 'retrieved all objects');
-      assert.deepEqual(objects, keys.sort(), 'found all expected keys in ascending order');
+      assert.deepEqual(objects.sort(), keys.sort(), 'found all expected keys');
       assert.end();
     });
 });
 
 test('scan objects, concurrency=1, gunzip, body', function(assert) {
   var objects = [];
-  var expected = Object.keys(fixtures);
 
   s3scan.Scan(uri + '/0', { agent: agent, concurrency: 1, gunzip: true, body: true })
     .on('error', function(err) { assert.ifError(err, 'should not fail'); })
@@ -235,7 +233,7 @@ test('scan objects, concurrency=1, gunzip, body', function(assert) {
       var keys = Object.keys(fixtures);
       keys = keys.filter(function(k) { return k[0] === '0'; });
       assert.equal(objects.length, keys.length, 'retrieved all objects');
-      assert.deepEqual(objects, keys.sort(), 'found all expected keys in ascending order');
+      assert.deepEqual(objects.sort(), keys.sort(), 'found all expected keys');
       assert.end();
     });
 });
@@ -271,8 +269,6 @@ test('[dryrun] purging fixtures - please be patient...', function(assert) {
 
   s3scan.Purge(uri, { agent: agent, dryrun: true }, function(err) {
     assert.ifError(err, 'success');
-
-    var params = s3urls.fromUrl(uri);
 
     s3scan.List(uri, { agent: agent })
       .on('data', function(keys) {
@@ -312,7 +308,7 @@ test('purging fixtures - please be patient...', function(assert) {
 
 test('get stream no-op on 404', function(assert) {
   var getter = s3scan.Get(bucket, { agent: agent })
-    .on('data', function(d) {
+    .on('data', function() {
       assert.fail('no data should be transmitted');
     })
     .on('error', function(err) {

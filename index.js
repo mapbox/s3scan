@@ -123,6 +123,7 @@ module.exports.Purge = function(s3url, options, callback) {
   var bucket = s3urls.fromUrl(s3url).Bucket;
   if (!bucket) throw new Error('Invalid s3url');
 
+ /* eslint-disable no-unused-vars */
   function done(err) {
     if (callback) return callback(err);
     if (err) throw err;

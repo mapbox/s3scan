@@ -1,3 +1,6 @@
 {
-  "extends": "eslint-config-unstyled"
+  "extends": "eslint:recommended",
+  "env": {
+    "node": true
+  }
 }
