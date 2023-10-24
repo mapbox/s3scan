@@ -139,7 +139,7 @@ test('scan objects', function(assert) {
         zlib.gunzip(zbody, function(err, body) {
           if (err) return done(err);
           var key = body.toString('hex');
-          if (!key in fixtures) assert.ok(key in fixtures, 'expected ' + key);
+          if (!(key in fixtures)) assert.ok(key in fixtures, 'expected ' + key);
           found.push(key);
           done();
         });
@@ -155,7 +155,6 @@ test('scan objects', function(assert) {
 
 test('scan objects, keys=true', function(assert) {
   var objects = [];
-  var expected = Object.keys(fixtures);
 
   s3scan.Scan(uri + '/0', { agent: agent, keys: true, concurrency: 1000 })
     .on('error', function(err) { assert.ifError(err, 'should not fail'); })
@@ -178,7 +177,6 @@ test('scan objects, keys=true', function(assert) {
 test('scan objects, concurrency=1', function(assert) {
   var found = [];
   var objects = [];
-  var expected = Object.keys(fixtures);
 
   s3scan.Scan(uri + '/0', { agent: agent, concurrency: 1 })
     .on('error', function(err) { assert.ifError(err, 'should not fail'); })
@@ -192,7 +190,7 @@ test('scan objects, concurrency=1', function(assert) {
         zlib.gunzip(zbody, function(err, body) {
           if (err) return done(err);
           var key = body.toString('hex');
-          if (!key in fixtures) assert.ok(key in fixtures, 'expected ' + key);
+          if (!(key in fixtures)) assert.ok(key in fixtures, 'expected ' + key);
           found.push(key);
           done();
         });
