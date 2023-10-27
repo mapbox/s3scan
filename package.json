@@ -7,8 +7,8 @@
     "node": "^18.0.0"
   },
   "scripts": {
-    "test": "eslint lib index.js",
-    "test-local": "tape test/*.test.js",
+    "test": "eslint lib test index.js && tape test/*.test.js",
+    "test-integration": "tape test/integration/*.test.js",
     "docs": "documentation build -f md > api.md"
   },
   "bin": {
@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/mapbox/s3scan#readme",
   "dependencies": {
+
     "aws-sdk": "^2.1479.0",
     "minimist": "^1.2.8",
     "parallel-stream": "^1.1.2",
