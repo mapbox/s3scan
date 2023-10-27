@@ -1,10 +1,10 @@
 const http = require('http');
 const AWS = require('aws-sdk');
 
-AWS.config.update({
-  region: 'us-east-1',
-});
-
+// Set up dummy AWS credentials for testing
+process.env.AWS_ACCESS_KEY_ID = 'dummy';
+process.env.AWS_SECRET_ACCESS_KEY = 'dummy';
+process.env.AWS_REGION = 'us-east-1';
 
 module.exports = function mock() {
   const server = http.createServer(function (req, res) {
