@@ -2,13 +2,7 @@ const http = require('http');
 const AWS = require('aws-sdk');
 
 AWS.config.update({
-  accessKeyId: 'DUMMY',
-  secretAccessKey: 'DUMMY',
   region: 'us-east-1',
-  s3: {
-    endpoint: 'http://localhost:20009',
-    s3BucketEndpoint: false,
-  },
 });
 
 
