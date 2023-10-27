@@ -1,23 +1,23 @@
-var https = require('https');
+const https = require('https');
 var agent = new https.Agent({
   keepAlive: true,
   maxSockets: Math.ceil(require('os').cpus().length * 16),
   keepAliveMsecs: 60000
 });
-var test = require('tape');
-var crypto = require('crypto');
-var d3 = require('d3-queue');
-var s3urls = require('@mapbox/s3urls');
-var _ = require('underscore');
-var AWS = require('aws-sdk');
-var s3 = new AWS.S3({ httpOptions: { agent: agent } });
-var s3scan = require('../../');
-var zlib = require('zlib');
+const test = require('tape');
+const crypto = require('crypto');
+const d3 = require('d3-queue');
+const s3urls = require('@mapbox/s3urls');
+const _ = require('underscore');
+const AWS = require('aws-sdk');
+const s3 = new AWS.S3({ httpOptions: { agent: agent } });
+const s3scan = require('../../');
+const zlib = require('zlib');
 
-var bucket = process.env.TestBucket || 'mapbox';
-var prefix = process.env.TestPrefix || 's3scan-test';
-var testId = crypto.randomBytes(16).toString('hex');
-var uri = ['s3:/', bucket, prefix, testId].join('/');
+const bucket = process.env.TestBucket || 'mapbox';
+const prefix = process.env.TestPrefix || 's3scan-test';
+const testId = crypto.randomBytes(16).toString('hex');
+const uri = ['s3:/', bucket, prefix, testId].join('/');
 
 console.log('\nTest uri: %s\n', uri);
 
