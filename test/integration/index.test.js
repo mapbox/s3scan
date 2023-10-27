@@ -11,7 +11,7 @@ var s3urls = require('@mapbox/s3urls');
 var _ = require('underscore');
 var AWS = require('aws-sdk');
 var s3 = new AWS.S3({ httpOptions: { agent: agent } });
-var s3scan = require('..');
+var s3scan = require('../../');
 var zlib = require('zlib');
 
 var bucket = process.env.TestBucket || 'mapbox';

@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "eslint lib test index.js && tape test/*.test.js",
-    "test-integration": "tape test/integration/*.test.js",
+    "test-integration": "tape test/integration/index.test.js",
     "docs": "documentation build -f md > api.md"
   },
   "bin": {
