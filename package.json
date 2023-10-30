@@ -1,13 +1,14 @@
 {
   "name": "@mapbox/s3scan",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "Streaming operations on S3 objects",
   "main": "index.js",
   "engines": {
-    "node": "^6.0.0"
+    "node": "^18.0.0"
   },
   "scripts": {
-    "test": "eslint lib index.js && tape test/*.test.js",
+    "test": "eslint lib test index.js && tape test/*.test.js",
+    "test-integration": "tape test/integration/index.test.js",
     "docs": "documentation build -f md > api.md"
   },
   "bin": {
@@ -26,18 +27,18 @@
   },
   "homepage": "https://github.com/mapbox/s3scan#readme",
   "dependencies": {
-    "aws-sdk": "^2.49.0",
-    "minimist": "^1.2.0",
+
+    "aws-sdk": "^2.1479.0",
+    "minimist": "^1.2.8",
     "parallel-stream": "^1.1.2",
-    "s3urls": "^1.5.2",
+    "@mapbox/s3urls": "^2.0.0",
     "split": "^1.0.0"
   },
   "devDependencies": {
     "d3-queue": "^3.0.7",
-    "documentation": "^8.0.2",
-    "eslint": "^5.2.0",
-    "eslint-config-unstyled": "^1.1.0",
+    "documentation": "^14.0.2",
+    "eslint": "^8.52.0",
     "tape": "^4.6.3",
-    "underscore": "^1.8.3"
+    "underscore": "^1.13.6"
   }
 }

@@ -1,4 +1,4 @@
-var s3urls = require('s3urls');
+var s3urls = require('@mapbox/s3urls');
 var Split = require('split');
 var List = require('./lib/keys');
 var Get = require('./lib/get');
@@ -122,11 +122,6 @@ module.exports.Purge = function(s3url, options, callback) {
 
   var bucket = s3urls.fromUrl(s3url).Bucket;
   if (!bucket) throw new Error('Invalid s3url');
-
-  function done(err) {
-    if (callback) return callback(err);
-    if (err) throw err;
-  }
 
   var del = Delete(bucket, options)
     .on('error', callback || function() {})
