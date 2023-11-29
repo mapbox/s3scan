@@ -1,6 +1,7 @@
 var s3urls = require('@mapbox/s3urls');
 var Split = require('split');
 var List = require('./lib/keys');
+var Prefixed = require('./lib/prefixed');
 var Get = require('./lib/get');
 var Delete = require('./lib/delete');
 
@@ -18,6 +19,21 @@ var Delete = require('./lib/delete');
  *   .pipe(process.stdout);
  */
 module.exports.List = List;
+
+/**
+ * Provides a readable stream of keys beneath the provided S3 prefix, replacing
+ * `{prefix}` in the input url with 0-255 hex characters [0-9a-f]
+ *
+ * @name s3scan.Prefixed
+ * @param {string} s3url - an S3 uri of the type `s3://bucket/{prefix}/something`
+ * @param {object} [options] - options to provide to the readable stream
+ * @param {object} [options.agent] - an HTTPS agent to use for S3 requests
+ * @returns {object} a readable stream of line-delimited keys
+ * @example
+ * require('s3scan').Prefixed('s3://my-bucket/{prefix}/my-key')
+ *   .pipe(process.stdout);
+ */
+module.exports.Prefixed = Prefixed;
 
 /**
  * Provides a transform stream that expects you to write line-delimited S3 keys
