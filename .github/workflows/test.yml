@@ -15,5 +15,10 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
-      - id: action-node-setup
-        uses: mapbox/gha@action-node-setup-v1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - run: |
+          npm ci
+      - run: |
+          npm run test
