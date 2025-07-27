@@ -30,7 +30,6 @@
     "@aws-sdk/client-s3": "^3.0.0",
     "minimist": "^1.2.8",
     "parallel-stream": "^1.1.2",
-    "@mapbox/s3urls": "^2.0.0",
     "split": "^1.0.0"
   },
   "devDependencies": {

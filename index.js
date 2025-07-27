@@ -1,4 +1,4 @@
-var s3urls = require('@mapbox/s3urls');
+var s3urls = require('./lib/s3url-parser');
 var Split = require('split');
 var List = require('./lib/keys');
 var Get = require('./lib/get');

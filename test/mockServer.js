@@ -11,16 +11,14 @@ module.exports = function mock() {
     s3.attempts++
 
     var routes = {
-      timeout: /^\/timeout/,
-      truncated: /^\/truncated/,
-      listTruncated: /^\/\?prefix=list-truncated/,
-      empty: /^\/\?prefix=empty/
+      timeout: /\/timeout/,
+      truncated: /\/truncated/,
+      listTruncated: /\?prefix=list-truncated/,
+      empty: /\?prefix=empty/
     };
     if (routes.timeout.test(req.url)) {
-      return setTimeout(function() {
-        res.writeHead(200);
-        res.end();
-      }, 15);
+      // Simulate a timeout by not responding and destroying the connection
+      return req.socket.destroy();
     }
 
     if (routes.truncated.test(req.url)) {
@@ -38,7 +36,8 @@ module.exports = function mock() {
     }
 
     if (routes.empty.test(req.url)) {
-      res.writeHead(200);
+      res.writeHead(500, { 'Content-Type': 'application/xml' });
+      res.write('<?xml version="1.0" encoding="UTF-8"?><Error><Code>InternalError</Code><Message>S3 API response contained no body</Message></Error>');
       return res.end();
     }
     res.writeHead(404);
@@ -52,7 +51,10 @@ module.exports = function mock() {
     client: new S3Client({
       endpoint: 'http://localhost:3000',
       forcePathStyle: true,
-      requestTimeout: 10,
+      maxAttempts: 4,
+      requestHandler: {
+        requestTimeout: 10
+      },
       credentials: {
         accessKeyId: 'dummy',
         secretAccessKey: 'dummy'
