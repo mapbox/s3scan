@@ -1,5 +1,5 @@
 const http = require('http');
-const AWS = require('aws-sdk');
+const { S3Client } = require('@aws-sdk/client-s3');
 
 // Set up dummy AWS credentials for testing
 process.env.AWS_ACCESS_KEY_ID = 'dummy';
@@ -49,12 +49,15 @@ module.exports = function mock() {
     start: server.listen.bind(server, 3000),
     stop: server.close.bind(server),
     attempts: 0,
-    client: new AWS.S3({
-      endpoint: new AWS.Endpoint('http://localhost:3000'),
-      s3BucketEndpoint: true,
-      httpOptions: {
-        timeout: 10
-      }
+    client: new S3Client({
+      endpoint: 'http://localhost:3000',
+      forcePathStyle: true,
+      requestTimeout: 10,
+      credentials: {
+        accessKeyId: 'dummy',
+        secretAccessKey: 'dummy'
+      },
+      region: 'us-east-1'
     })
   };
 
