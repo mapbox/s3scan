@@ -1,5 +1,5 @@
 const http = require('http');
-const AWS = require('aws-sdk');
+const { S3Client } = require('@aws-sdk/client-s3');
 
 // Set up dummy AWS credentials for testing
 process.env.AWS_ACCESS_KEY_ID = 'dummy';
@@ -11,16 +11,14 @@ module.exports = function mock() {
     s3.attempts++
 
     var routes = {
-      timeout: /^\/timeout/,
-      truncated: /^\/truncated/,
-      listTruncated: /^\/\?prefix=list-truncated/,
-      empty: /^\/\?prefix=empty/
+      timeout: /\/timeout/,
+      truncated: /\/truncated/,
+      listTruncated: /\?prefix=list-truncated/,
+      empty: /\?prefix=empty/
     };
     if (routes.timeout.test(req.url)) {
-      return setTimeout(function() {
-        res.writeHead(200);
-        res.end();
-      }, 15);
+      // Simulate a timeout by not responding and destroying the connection
+      return req.socket.destroy();
     }
 
     if (routes.truncated.test(req.url)) {
@@ -38,7 +36,8 @@ module.exports = function mock() {
     }
 
     if (routes.empty.test(req.url)) {
-      res.writeHead(200);
+      res.writeHead(500, { 'Content-Type': 'application/xml' });
+      res.write('<?xml version="1.0" encoding="UTF-8"?><Error><Code>InternalError</Code><Message>S3 API response contained no body</Message></Error>');
       return res.end();
     }
     res.writeHead(404);
@@ -49,12 +48,18 @@ module.exports = function mock() {
     start: server.listen.bind(server, 3000),
     stop: server.close.bind(server),
     attempts: 0,
-    client: new AWS.S3({
-      endpoint: new AWS.Endpoint('http://localhost:3000'),
-      s3BucketEndpoint: true,
-      httpOptions: {
-        timeout: 10
-      }
+    client: new S3Client({
+      endpoint: 'http://localhost:3000',
+      forcePathStyle: true,
+      maxAttempts: 4,
+      requestHandler: {
+        requestTimeout: 10
+      },
+      credentials: {
+        accessKeyId: 'dummy',
+        secretAccessKey: 'dummy'
+      },
+      region: 'us-east-1'
     })
   };
 

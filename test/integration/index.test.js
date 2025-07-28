@@ -7,10 +7,10 @@ var agent = new https.Agent({
 const test = require('tape');
 const crypto = require('crypto');
 const d3 = require('d3-queue');
-const s3urls = require('@mapbox/s3urls');
+const s3urls = require('../../lib/s3url-parser');
 const _ = require('underscore');
-const AWS = require('aws-sdk');
-const s3 = new AWS.S3({ httpOptions: { agent: agent } });
+const { S3Client, PutObjectCommand, ListObjectsCommand } = require('@aws-sdk/client-s3');
+const s3 = new S3Client({ requestHandler: { httpsAgent: agent } });
 const s3scan = require('../../');
 const zlib = require('zlib');
 
@@ -50,7 +50,11 @@ test('load fixtures - please be patient...', function(assert) {
       Body: fixtures[key]
     };
 
-    queue.defer(s3.putObject.bind(s3), params);
+    queue.defer(function(params, callback) {
+      s3.send(new PutObjectCommand(params))
+        .then(function(data) { callback(null, data); })
+        .catch(callback);
+    }, params);
   });
 
   queue.awaitAll(function(err) {
@@ -290,15 +294,18 @@ test('purging fixtures - please be patient...', function(assert) {
 
     var params = s3urls.fromUrl(uri);
 
-    s3.listObjects({
+    s3.send(new ListObjectsCommand({
       Bucket: params.Bucket,
       Prefix: params.Key
-    }, function(err, data) {
-      if (err) throw err;
-      assert.equal(deletedEvents, 2 * Object.keys(fixtures).length, 'all deleted events fired');
-      assert.equal(data.Contents.length, 0, 'all items removed');
-      assert.end();
-    });
+    }))
+      .then(function(data) {
+        assert.equal(deletedEvents, 2 * Object.keys(fixtures).length, 'all deleted events fired');
+        assert.equal(data.Contents.length, 0, 'all items removed');
+        assert.end();
+      })
+      .catch(function(err) {
+        throw err;
+      });
   }).on('deleted', function() {
     deletedEvents++;
   });
