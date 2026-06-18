@@ -1,6 +1,6 @@
 {
   "name": "@mapbox/s3scan",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Streaming operations on S3 objects",
   "main": "index.js",
   "engines": {
@@ -39,5 +39,8 @@
     "eslint": "^8.52.0",
     "tape": "^4.6.3",
     "underscore": "^1.13.6"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
